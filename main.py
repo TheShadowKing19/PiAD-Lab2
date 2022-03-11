@@ -1,0 +1,36 @@
+import numpy as np
+import pandas as pd
+
+
+print("Zadanie 1")
+dates = pd.date_range("20200301", periods=5)
+df = pd.DataFrame(np.random.randn(5, 3), index=dates, columns=list('ABC'))
+print(df)
+
+print("\nZadanie 2")
+ids = np.arange(0, 21)
+df2 = pd.DataFrame(np.random.randint(0, 20, size=(21, 3)), index=ids, columns=list('ABC'))
+print(df2)
+print("\nTrzy pierwsze wiersze:")
+print(df2[1:4])  # albo df2.head(3)
+print("\nTrzy ostatnie wiersze:")
+print(df2[18:21])   # albo df2.tail(3)
+print("\nIndeksy:")
+print(df2.index)
+print("\nKolumny:")
+print(df2.columns)
+print("\nSame wartości:")
+print(df2.values)
+print("\nWyświetlanie losowych wartości:")
+print(df2.loc[np.random.randint(1, 21, size=(5, ))])
+print("\nWyświetlanie tylko kolumny A:")
+print(df2['A'].values)
+print("\nWyświetlanie tylko kolumny A i B:")
+print(df2.loc['1':'20', ['A', 'B']].values)
+print("\nTrzy pierwsze wiersze i kolumny A i B:")
+print(df2.iloc[0:3, [0, 1]])
+print("\nWiersz piąty:")
+print(df2.iloc[5])
+print("\nWiersz 0, 5, 6, 7 i kolumny 1 i 2:")
+print(df2.iloc[[0, 5, 6, 7], [0, 2]])
+
