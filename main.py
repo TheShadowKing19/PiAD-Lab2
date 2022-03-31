@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from scipy import stats
+from matplotlib import pyplot as plt
 
 print("Zadanie 1")
 dates = pd.date_range("20200301", periods=5)
@@ -8,53 +10,53 @@ print(df)
 
 print("\nZadanie 2")
 ids = np.arange(0, 21)
-df2 = pd.DataFrame(np.random.randint(0, 20, size=(21, 3)), index=ids, columns=list('ABC'))
-print(df2)
+pandas_load = pd.DataFrame(np.random.randint(0, 20, size=(21, 3)), index=ids, columns=list('ABC'))
+print(pandas_load)
 print("\nTrzy pierwsze wiersze:")
-print(df2[1:4])  # albo df2.head(3)
+print(pandas_load[1:4])  # albo pandas_load.head(3)
 print("\nTrzy ostatnie wiersze:")
-print(df2[18:21])  # albo df2.tail(3)
+print(pandas_load[18:21])  # albo pandas_load.tail(3)
 print("\nIndeksy:")
-print(df2.index)
+print(pandas_load.index)
 print("\nKolumny:")
-print(df2.columns)
+print(pandas_load.columns)
 print("\nSame wartości:")
-print(df2.values)
+print(pandas_load.values)
 print("\nWyświetlanie losowych wartości:")
-print(df2.loc[np.random.randint(1, 21, size=(5,))])
+print(pandas_load.loc[np.random.randint(1, 21, size=(5,))])
 print("\nWyświetlanie tylko kolumny A:")
-print(df2['A'].values)
+print(pandas_load['A'].values)
 print("\nWyświetlanie tylko kolumny A i B:")
-print(df2.loc['1':'20', ['A', 'B']].values)
+print(pandas_load.loc['1':'20', ['A', 'B']].values)
 print("\nTrzy pierwsze wiersze i kolumny A i B:")
-print(df2.iloc[0:3, [0, 1]])
+print(pandas_load.iloc[0:3, [0, 1]])
 print("\nWiersz piąty:")
-print(df2.iloc[5])
+print(pandas_load.iloc[5])
 print("\nWiersz 0, 5, 6, 7 i kolumny 1 i 2:")
-print(df2.iloc[[0, 5, 6, 7], [0, 2]])
+print(pandas_load.iloc[[0, 5, 6, 7], [0, 2]])
 
 print("\n\nZadanie 3")
 print("\nWyświetl podstawowe statystyki")
-print(df2.describe())
+print(pandas_load.describe())
 
 print("\nKtóre dane są większe od zera")
-print(df2 > 0)
+print(pandas_load > 0)
 # lub
-print(df2.gt(0))
+print(pandas_load.gt(0))
 
 print("\nWyświetl tylko wartości które są większe od 0")
-# Aby sprawdzić jeden rząd, należało by jeszcze dodać najpierw df2 = df2.loc[[<rząd>]]
-print(df2.loc[:, df2.gt(0).all()])
+# Aby sprawdzić jeden rząd, należało by jeszcze dodać najpierw pandas_load = pandas_load.loc[[<rząd>]]
+print(pandas_load.loc[:, pandas_load.gt(0).all()])
 
 print("\nWybierz z kolumny 'A' tylko dane większe od 0")
-df2_mask = df2['A'].values > 0
-print(df2['A'][df2_mask])
+pandas_load_mask = pandas_load['A'].values > 0
+print(pandas_load['A'][pandas_load_mask])
 
 print("\nŚrednia w kolumnach")
-print(df2.mean())  # df2.mean(<nazwa_kolumny>) by obliczyć średnią jednej kolumny
+print(pandas_load.mean())  # pandas_load.mean(<nazwa_kolumny>) by obliczyć średnią jednej kolumny
 
 print("\nŚrednia w wierszach")
-print(df2.mean(axis=1))
+print(pandas_load.mean(axis=1))
 
 print("\n\nZadanie 4")
 print("Stwórz dwie tablice i je łacze:")
@@ -135,5 +137,71 @@ print(df.value_counts())
 print("\nZadanie 3")
 numpy_load = np.loadtxt("autos.csv", delimiter=",", dtype="str")
 print(numpy_load)
-pandas_load = pd.read_csv('autos.csv')
+pandas_load = pd.read_csv('autos.csv', index_col=0)
 print("\n", pandas_load)
+
+print("\nZadanie 4")
+print(pandas_load.groupby('make').mean())
+
+print("\nZadanie 5")
+print(pandas_load.groupby(['make', 'fuel-type'])['fuel-type'].count())
+
+print("\nZadanie 6")
+wynik1 = np.polyfit(pandas_load["city-mpg"].values, pandas_load["length"].values, 1) # polyfit(x, y, <stopień-wielomianu>)
+wynik2 = np.polyfit(pandas_load["city-mpg"].values, pandas_load["length"].values, 1)
+pv1 = np.polyval(wynik1, pandas_load['city-mpg'])
+pv2 = np.polyval(wynik2, pandas_load['city-mpg'])
+print("Wielomian 1 stopnia:", wynik1)
+print("Wielomian 2 stopnia:", wynik2)
+
+print("\nZadanie 7")
+print(stats.pearsonr(pandas_load['city-mpg'], pandas_load['length']))
+
+print("\nZadanie 8")
+fig, az = plt.subplots()
+az.scatter(pandas_load['city-mpg'], pandas_load['length'])
+az.plot(pandas_load['city-mpg'], pv1)
+plt.show()
+
+print("\nzadanie 9")
+
+#estymator1 = stats.gaussian_kde(pandas_load['length'])  # Estymator funkcji gestości dla długości
+# estymator2 = stats.gaussian_kde(pandas_load['width'])
+
+est = stats.gaussian_kde(pandas_load['length'])
+est2 = stats.gaussian_kde(pandas_load['width'])
+f = np.linspace(pandas_load["length"].min(), pandas_load["length"].max(), num=205)
+fig, ax = plt.subplots()
+ax.bar(f, est(f), width=5, edgecolor="purple", linewidth=1)
+ax.plot(f, est(f), label='Gaussian_kde for \'length\'')
+plt.show()
+fw = np.linspace(pandas_load['width'].min(), pandas_load['width'].max(), num=205)
+fig, ax = plt.subplots(1, 2)
+
+ax[0].plot(f, est(f), label='length')
+ax[0].set_title('length')
+ax[1].plot(fw, est2(fw))
+ax[1].set_title('width')
+
+plt.show()
+
+# Zad 11
+
+'''
+x = pandas_load['length']
+y = pandas_load['width']
+xx, yy = np.mgrid[x.min():x.max():100j, y.min():y.max():100j]
+positions = np.vstack([xx.ravel(), yy.ravel()])
+values = np.vstack([x, y])
+kernel = stats.gaussian_kde(values)
+f = np.reshape(kernel(positions).T, xx.shape)
+fig = plt.figure()
+ax = fig.gca()
+ax.set_xlim(x.min(), x.max())
+ax.set_ylim(y.min(), y.max())
+cfset = ax.contourf(xx, yy, f, cmap='RdYlBu_r')
+cset = ax.contour(xx, yy, f, colors='k')
+ax.set_xlabel('length')
+ax.set_ylabel('width')
+plt.show()
+'''
