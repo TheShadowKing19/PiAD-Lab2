@@ -169,22 +169,18 @@ print("\nzadanie 9")
 # estymator2 = stats.gaussian_kde(pandas_load['width'])
 
 est = stats.gaussian_kde(pandas_load['length'])
-est2 = stats.gaussian_kde(pandas_load['width'])
 f = np.linspace(pandas_load["length"].min(), pandas_load["length"].max(), num=205)
 fig, ax = plt.subplots()
-ax.bar(f, est(f), width=5, edgecolor="purple", linewidth=1)
-ax.plot(f, est(f), label='Gaussian_kde for \'length\'')
+# ax.bar(f, est(f), width=5, edgecolor="purple", linewidth=1)
+# ax.plot(f, est(f), label='Gaussian_kde for \'length\'')
 plt.show()
-fw = np.linspace(pandas_load['width'].min(), pandas_load['width'].max(), num=205)
-fig, ax = plt.subplots(1, 2)
-
-ax[0].plot(f, est(f), label='length')
-ax[0].set_title('length')
-ax[1].plot(fw, est2(fw))
-ax[1].set_title('width')
+# fw = np.linspace(pandas_load['width'].min(), pandas_load['width'].max(), num=205)
+# fig, ax = plt.subplots(1, 2)
 
 plt.show()
 
+
+est2 = stats.gaussian_kde(pandas_load['width'])
 # Zad 11
 
 '''
